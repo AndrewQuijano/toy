@@ -55,7 +55,11 @@ file_entry * parse_record(FILE *f) {
  * (2018), IV-A1 and V-B3, for the initialized-DUA requirement and scope strategy.
  */
 void consume_record(file_entry ent) {
-    printf("Entry: bar = %s, ", ent.bar);
+    volatile uint32_t sink_value = ent.data.intdata;
+    volatile uint32_t *sink = &sink_value;
+    *sink = ent.type;
+
+    printf("Entry: bar = %.*s, ", (int)sizeof(ent.bar), ent.bar);
     if (ent.type == TYPEA) {
         printf("fdata = %f\n", ent.data.fdata);
     }
@@ -64,7 +68,6 @@ void consume_record(file_entry ent) {
     }
     else {
         printf("Unknown type %x\n", ent.type);
-        exit(1);
     }
 }
 
